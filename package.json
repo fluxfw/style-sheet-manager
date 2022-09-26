@@ -1,9 +1,12 @@
 {
     "name": "flux-css-api",
     "productName": "flux-css-api",
-    "version": "2022-09-22-1",
+    "version": "2022-09-26-1",
     "description": "",
     "keywords": [],
     "homepage": "",
+    "peerDependencies": {
+        "flux-fetch-api": "*"
+    },
     "private": true
 }
