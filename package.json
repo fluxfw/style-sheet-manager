@@ -6,7 +6,7 @@
     "keywords": [],
     "homepage": "",
     "peerDependencies": {
-        "flux-fetch-api": "https://github.com/fluxfw/flux-fetch-api/archive/refs/tags/*.tar.gz"
+        "flux-fetch-api": "*"
     },
     "private": true
 }
