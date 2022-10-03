@@ -1,7 +1,8 @@
-import { CssCache } from "../../../Adapter/Cache/CssCache.mjs";
-import { ImportCss } from "../../../Adapter/ImportCss/ImportCss.mjs";
 import { ImportCssCommand } from "../Command/ImportCssCommand.mjs";
 import { ImportCssToRootCommand } from "../Command/ImportCssToRootCommand.mjs";
+
+/** @typedef {import("../../../Adapter/Cache/CssCache.mjs").CssCache} CssCache */
+/** @typedef {import("../../../Adapter/ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
 export class CssService {
     /**

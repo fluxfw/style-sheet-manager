@@ -1,7 +1,8 @@
 import { CssCache } from "../Cache/CssCache.mjs";
 import { CssService } from "../../Service/Css/Port/CssService.mjs";
-import { FetchApi } from "../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs";
-import { ImportCss } from "../ImportCss/ImportCss.mjs";
+
+/** @typedef {import("../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs").FetchApi} FetchApi */
+/** @typedef {import("../ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
 export class CssApi {
     /**

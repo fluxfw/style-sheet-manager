@@ -1,4 +1,4 @@
-import { ImportCss } from "../../../Adapter/ImportCss/ImportCss.mjs";
+/** @typedef {import("../../../Adapter/ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
 export class ImportCssCommand {
     /**
