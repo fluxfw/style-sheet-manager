@@ -1,7 +1,8 @@
 import { ASSERT_TYPE_CSS } from "../../../../flux-fetch-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
-import { CssCache } from "../Cache/CssCache.mjs";
-import { FetchApi } from "../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs";
 import { ImportCss } from "./ImportCss.mjs";
+
+/** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
+/** @typedef {import("../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs").FetchApi} FetchApi */
 
 export class FetchImportCss extends ImportCss {
     /**
