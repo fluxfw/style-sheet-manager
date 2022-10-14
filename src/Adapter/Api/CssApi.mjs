@@ -87,15 +87,19 @@ export class CssApi {
      * @returns {Promise<ImportCss>}
      */
     async #getImportCss() {
-        /*try {
-            return (await import("../ImportCss/AssertImportCss.mjs")).AssertImportCss.new();
+        try {
+            if (navigator.userAgentData?.brands?.some(brand => brand.brand === "Chromium") ?? false) {
+                return (await import("../ImportCss/AssertImportCss.mjs")).AssertImportCss.new();
+            }
         } catch (error) {
-            console.info("Unsupported assert import - Using fetch fallback (", error, ")");*/
+            console.error(error);
+        }
+
+        console.info("Unsupported assert import - Using fetch fallback");
 
         return (await import("../ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
             this.#css_cache,
             this.#fetch_api
         );
-        //}
     }
 }
