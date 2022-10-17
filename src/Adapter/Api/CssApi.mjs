@@ -1,6 +1,6 @@
 import { CssCache } from "../Cache/CssCache.mjs";
-import { CssService } from "../../Service/Css/Port/CssService.mjs";
 
+/** @typedef {import("../../Service/Css/Port/CssService.mjs").CssService} CssService */
 /** @typedef {import("../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs").FetchApi} FetchApi */
 /** @typedef {import("../ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
@@ -48,7 +48,7 @@ export class CssApi {
 
         this.#import_css ??= await this.#getImportCss();
 
-        this.#css_service ??= this.#getCssService();
+        this.#css_service ??= await this.#getCssService();
     }
 
     /**
@@ -74,10 +74,10 @@ export class CssApi {
     }
 
     /**
-     * @returns {CssService}
+     * @returns {Promise<CssService>}
      */
-    #getCssService() {
-        return CssService.new(
+    async #getCssService() {
+        return (await import("../../Service/Css/Port/CssService.mjs")).CssService.new(
             this.#css_cache,
             this.#import_css
         );

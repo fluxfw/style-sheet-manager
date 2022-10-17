@@ -1,4 +1,3 @@
-import { ImportCssCommand } from "../Command/ImportCssCommand.mjs";
 import { ImportCssToRootCommand } from "../Command/ImportCssToRootCommand.mjs";
 
 /** @typedef {import("../../../Adapter/Cache/CssCache.mjs").CssCache} CssCache */
@@ -41,7 +40,7 @@ export class CssService {
      * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
      */
     async importCss(url) {
-        return ImportCssCommand.new(
+        return (await import("../Command/ImportCssCommand.mjs")).ImportCssCommand.new(
             this.#import_css
         )
             .importCss(
