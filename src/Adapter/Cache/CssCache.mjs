@@ -1,5 +1,5 @@
 /**
- * @extends Map<string, CSSStyleSheet | HTMLStyleElement>
+ * @augments Map<string, CSSStyleSheet | HTMLStyleElement>
  */
 export class CssCache extends Map {
 
