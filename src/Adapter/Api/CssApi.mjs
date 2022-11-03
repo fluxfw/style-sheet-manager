@@ -46,9 +46,7 @@ export class CssApi {
     async init() {
         this.#css_cache ??= new CssCache();
 
-        this.#import_css ??= await this.#getImportCss();
-
-        this.#css_service ??= await this.#getCssService();
+        await this.#getCssService();
     }
 
     /**
@@ -56,7 +54,7 @@ export class CssApi {
      * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
      */
     async importCss(url) {
-        return this.#css_service.importCss(
+        return (await this.#getCssService()).importCss(
             url
         );
     }
@@ -77,29 +75,37 @@ export class CssApi {
      * @returns {Promise<CssService>}
      */
     async #getCssService() {
-        return (await import("../../Service/Css/Port/CssService.mjs")).CssService.new(
+        this.#css_service ??= (await import("../../Service/Css/Port/CssService.mjs")).CssService.new(
             this.#css_cache,
-            this.#import_css
+            this.#getImportCss()
         );
+
+        return this.#css_service;
     }
 
     /**
      * @returns {Promise<ImportCss>}
      */
     async #getImportCss() {
-        try {
-            if (navigator.userAgentData?.brands?.some(brand => brand.brand === "Chromium") ?? false) {
-                return (await import("../ImportCss/AssertImportCss.mjs")).AssertImportCss.new();
+        if (this.#import_css === null) {
+            try {
+                if (navigator.userAgentData?.brands?.some(brand => brand.brand === "Chromium") ?? false) {
+                    this.#import_css ??= (await import("../ImportCss/AssertImportCss.mjs")).AssertImportCss.new();
+
+                    return this.#import_css;
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
+
+            console.info("Unsupported assert import - Using fetch fallback");
+
+            this.#import_css ??= (await import("../ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
+                this.#css_cache,
+                this.#fetch_api
+            );
         }
 
-        console.info("Unsupported assert import - Using fetch fallback");
-
-        return (await import("../ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
-            this.#css_cache,
-            this.#fetch_api
-        );
+        return this.#import_css;
     }
 }
