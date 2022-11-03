@@ -77,7 +77,7 @@ export class CssApi {
     async #getCssService() {
         this.#css_service ??= (await import("../../Service/Css/Port/CssService.mjs")).CssService.new(
             this.#css_cache,
-            this.#getImportCss()
+            await this.#getImportCss()
         );
 
         return this.#css_service;
