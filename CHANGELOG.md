@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2022-11-21-1
+
+Changes:
+
+- Fix css urls in fetch fallback
+
 ## v2022-11-03-2
 
 Changes:
