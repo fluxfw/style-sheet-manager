@@ -48,13 +48,13 @@ export class FetchImportCss extends ImportCss {
         if (this.#css_cache.has(url)) {
             sheet = this.#css_cache.get(url);
         } else {
-            const css = await this.#fetch_api.fetch(
+            const css = (await this.#fetch_api.fetch(
                 {
                     url,
                     no_ui: true,
                     assert_type: ASSERT_TYPE_CSS
                 }
-            );
+            )).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
 
             try {
                 sheet = new CSSStyleSheet();
