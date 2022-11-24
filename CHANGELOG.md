@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2022-11-24-1
+
+Changes:
+
+- Reduce `init`
+
 ## v2022-11-21-1
 
 Changes:

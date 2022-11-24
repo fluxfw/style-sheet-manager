@@ -6,9 +6,9 @@ import { CssCache } from "../Cache/CssCache.mjs";
 
 export class CssApi {
     /**
-     * @type {CssCache | null}
+     * @type {CssCache}
      */
-    #css_cache = null;
+    #css_cache;
     /**
      * @type {CssService | null}
      */
@@ -38,14 +38,13 @@ export class CssApi {
      */
     constructor(fetch_api) {
         this.#fetch_api = fetch_api;
+        this.#css_cache = new CssCache();
     }
 
     /**
      * @returns {Promise<void>}
      */
     async init() {
-        this.#css_cache ??= new CssCache();
-
         await this.#getCssService();
     }
 
