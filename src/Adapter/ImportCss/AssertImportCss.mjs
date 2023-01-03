@@ -1,4 +1,4 @@
-import { ASSERT_TYPE_CSS } from "../../../../flux-fetch-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
+import { ASSERT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
 export class AssertImportCss extends ImportCss {
