@@ -1,8 +1,8 @@
-import { ASSERT_TYPE_CSS } from "../../../../flux-fetch-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
+import { ASSERT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
 /** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
-/** @typedef {import("../../../../flux-fetch-api/src/Adapter/Api/FetchApi.mjs").FetchApi} FetchApi */
+/** @typedef {import("../../../../flux-http-api/src/Adapter/Api/HttpApi.mjs").HttpApi} HttpApi */
 
 export class FetchImportCss extends ImportCss {
     /**
@@ -10,32 +10,32 @@ export class FetchImportCss extends ImportCss {
      */
     #css_cache;
     /**
-     * @type {FetchApi}
+     * @type {HttpApi}
      */
-    #fetch_api;
+    #http_api;
 
     /**
      * @param {CssCache} css_cache
-     * @param {FetchApi} fetch_api
+     * @param {HttpApi} http_api
      * @returns {FetchImportCss}
      */
-    static new(css_cache, fetch_api) {
+    static new(css_cache, http_api) {
         return new this(
             css_cache,
-            fetch_api
+            http_api
         );
     }
 
     /**
      * @param {CssCache} css_cache
-     * @param {FetchApi} fetch_api
+     * @param {HttpApi} http_api
      * @private
      */
-    constructor(css_cache, fetch_api) {
+    constructor(css_cache, http_api) {
         super();
 
         this.#css_cache = css_cache;
-        this.#fetch_api = fetch_api;
+        this.#http_api = http_api;
     }
 
     /**
@@ -48,7 +48,7 @@ export class FetchImportCss extends ImportCss {
         if (this.#css_cache.has(url)) {
             sheet = this.#css_cache.get(url);
         } else {
-            const css = (await this.#fetch_api.fetch(
+            const css = (await this.#http_api.fetch(
                 {
                     url,
                     no_ui: true,
