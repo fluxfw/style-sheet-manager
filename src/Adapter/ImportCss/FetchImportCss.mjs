@@ -1,4 +1,4 @@
-import { ASSERT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/AssertType/ASSERT_TYPE.mjs";
+import { FETCH_ASSERT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/Fetch/FETCH_ASSERT_TYPE.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
 /** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
@@ -52,7 +52,7 @@ export class FetchImportCss extends ImportCss {
                 {
                     url,
                     no_ui: true,
-                    assert_type: ASSERT_TYPE_CSS
+                    assert_type: FETCH_ASSERT_TYPE_CSS
                 }
             )).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
 
