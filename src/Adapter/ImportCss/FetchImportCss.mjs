@@ -1,4 +1,6 @@
-import { FETCH_ASSERT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/Fetch/FETCH_ASSERT_TYPE.mjs";
+import { CONTENT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/ContentType/CONTENT_TYPE.mjs";
+import { HEADER_ACCEPT } from "../../../../flux-http-api/src/Adapter/Header/HEADER.mjs";
+import { HttpClientRequest } from "../../../../flux-http-api/src/Adapter/Client/HttpClientRequest.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
 /** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
@@ -48,13 +50,16 @@ export class FetchImportCss extends ImportCss {
         if (this.#css_cache.has(url)) {
             sheet = this.#css_cache.get(url);
         } else {
-            const css = (await this.#http_api.fetch(
-                {
+            const css = (await (await this.#http_api.fetch(
+                HttpClientRequest.new(
                     url,
-                    no_ui: true,
-                    assert_type: FETCH_ASSERT_TYPE_CSS
-                }
-            )).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
+                    null,
+                    null,
+                    {
+                        [HEADER_ACCEPT]: CONTENT_TYPE_CSS
+                    }
+                )
+            )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
 
             try {
                 sheet = new CSSStyleSheet();
