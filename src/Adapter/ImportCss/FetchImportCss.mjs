@@ -50,7 +50,7 @@ export class FetchImportCss extends ImportCss {
         if (this.#css_cache.has(url)) {
             sheet = this.#css_cache.get(url);
         } else {
-            const css = (await (await this.#http_api.fetch(
+            const css = (await (await this.#http_api.request(
                 HttpClientRequest.new(
                     url,
                     null,
