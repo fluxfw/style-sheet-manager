@@ -52,7 +52,7 @@ export class FetchImportCss extends ImportCss {
         } else {
             const css = (await (await this.#http_api.request(
                 HttpClientRequest.new(
-                    url,
+                    new URL(url),
                     null,
                     null,
                     {
