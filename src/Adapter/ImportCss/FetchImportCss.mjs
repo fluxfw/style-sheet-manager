@@ -57,7 +57,8 @@ export class FetchImportCss extends ImportCss {
                     null,
                     {
                         [HEADER_ACCEPT]: CONTENT_TYPE_CSS
-                    }
+                    },
+                    true
                 )
             )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
 
