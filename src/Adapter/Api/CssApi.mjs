@@ -1,7 +1,7 @@
 import { CssCache } from "../Cache/CssCache.mjs";
 
 /** @typedef {import("../../Service/Css/Port/CssService.mjs").CssService} CssService */
-/** @typedef {import("../../../../flux-http-api/src/Adapter/Api/HttpApi.mjs").HttpApi} HttpApi */
+/** @typedef {import("../../../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
 /** @typedef {import("../ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
 export class CssApi {
@@ -14,30 +14,30 @@ export class CssApi {
      */
     #css_service = null;
     /**
-     * @type {HttpApi}
+     * @type {FluxHttpApi}
      */
-    #http_api;
+    #flux_http_api;
     /**
      * @type {ImportCss | null}
      */
     #import_css = null;
 
     /**
-     * @param {HttpApi} http_api
+     * @param {FluxHttpApi} flux_http_api
      * @returns {CssApi}
      */
-    static new(http_api) {
+    static new(flux_http_api) {
         return new this(
-            http_api
+            flux_http_api
         );
     }
 
     /**
-     * @param {HttpApi} http_api
+     * @param {FluxHttpApi} flux_http_api
      * @private
      */
-    constructor(http_api) {
-        this.#http_api = http_api;
+    constructor(flux_http_api) {
+        this.#flux_http_api = flux_http_api;
         this.#css_cache = new CssCache();
     }
 
@@ -101,7 +101,7 @@ export class CssApi {
 
             this.#import_css ??= (await import("../ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
                 this.#css_cache,
-                this.#http_api
+                this.#flux_http_api
             );
         }
 

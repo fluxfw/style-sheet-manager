@@ -1,10 +1,10 @@
-import { CONTENT_TYPE_CSS } from "../../../../flux-http-api/src/Adapter/ContentType/CONTENT_TYPE.mjs";
-import { HEADER_ACCEPT } from "../../../../flux-http-api/src/Adapter/Header/HEADER.mjs";
-import { HttpClientRequest } from "../../../../flux-http-api/src/Adapter/Client/HttpClientRequest.mjs";
+import { CONTENT_TYPE_CSS } from "../../../../flux-http-api/src/ContentType/CONTENT_TYPE.mjs";
+import { HEADER_ACCEPT } from "../../../../flux-http-api/src/Header/HEADER.mjs";
+import { HttpClientRequest } from "../../../../flux-http-api/src/Client/HttpClientRequest.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
 /** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
-/** @typedef {import("../../../../flux-http-api/src/Adapter/Api/HttpApi.mjs").HttpApi} HttpApi */
+/** @typedef {import("../../../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
 
 export class FetchImportCss extends ImportCss {
     /**
@@ -12,32 +12,32 @@ export class FetchImportCss extends ImportCss {
      */
     #css_cache;
     /**
-     * @type {HttpApi}
+     * @type {FluxHttpApi}
      */
-    #http_api;
+    #flux_http_api;
 
     /**
      * @param {CssCache} css_cache
-     * @param {HttpApi} http_api
+     * @param {FluxHttpApi} flux_http_api
      * @returns {FetchImportCss}
      */
-    static new(css_cache, http_api) {
+    static new(css_cache, flux_http_api) {
         return new this(
             css_cache,
-            http_api
+            flux_http_api
         );
     }
 
     /**
      * @param {CssCache} css_cache
-     * @param {HttpApi} http_api
+     * @param {FluxHttpApi} flux_http_api
      * @private
      */
-    constructor(css_cache, http_api) {
+    constructor(css_cache, flux_http_api) {
         super();
 
         this.#css_cache = css_cache;
-        this.#http_api = http_api;
+        this.#flux_http_api = flux_http_api;
     }
 
     /**
@@ -50,7 +50,7 @@ export class FetchImportCss extends ImportCss {
         if (this.#css_cache.has(url)) {
             sheet = this.#css_cache.get(url);
         } else {
-            const css = (await (await this.#http_api.request(
+            const css = (await (await this.#flux_http_api.request(
                 HttpClientRequest.new(
                     new URL(url),
                     null,
