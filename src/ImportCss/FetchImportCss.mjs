@@ -1,42 +1,41 @@
-import { CONTENT_TYPE_CSS } from "../../../../flux-http-api/src/ContentType/CONTENT_TYPE.mjs";
-import { HEADER_ACCEPT } from "../../../../flux-http-api/src/Header/HEADER.mjs";
-import { HttpClientRequest } from "../../../../flux-http-api/src/Client/HttpClientRequest.mjs";
+import { CONTENT_TYPE_CSS } from "../../../flux-http-api/src/ContentType/CONTENT_TYPE.mjs";
+import { HEADER_ACCEPT } from "../../../flux-http-api/src/Header/HEADER.mjs";
+import { HttpClientRequest } from "../../../flux-http-api/src/Client/HttpClientRequest.mjs";
 import { ImportCss } from "./ImportCss.mjs";
 
-/** @typedef {import("../Cache/CssCache.mjs").CssCache} CssCache */
-/** @typedef {import("../../../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
+/** @typedef {import("../../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
 
 export class FetchImportCss extends ImportCss {
     /**
-     * @type {CssCache}
+     * @type {Map<CSSStyleSheet | HTMLStyleElement>}
      */
-    #css_cache;
+    #cache;
     /**
      * @type {FluxHttpApi}
      */
     #flux_http_api;
 
     /**
-     * @param {CssCache} css_cache
+     * @param {Map<CSSStyleSheet | HTMLStyleElement>} cache
      * @param {FluxHttpApi} flux_http_api
      * @returns {FetchImportCss}
      */
-    static new(css_cache, flux_http_api) {
+    static new(cache, flux_http_api) {
         return new this(
-            css_cache,
+            cache,
             flux_http_api
         );
     }
 
     /**
-     * @param {CssCache} css_cache
+     * @param {Map<CSSStyleSheet | HTMLStyleElement>} cache
      * @param {FluxHttpApi} flux_http_api
      * @private
      */
-    constructor(css_cache, flux_http_api) {
+    constructor(cache, flux_http_api) {
         super();
 
-        this.#css_cache = css_cache;
+        this.#cache = cache;
         this.#flux_http_api = flux_http_api;
     }
 
@@ -47,8 +46,8 @@ export class FetchImportCss extends ImportCss {
     async importCss(url) {
         let sheet;
 
-        if (this.#css_cache.has(url)) {
-            sheet = this.#css_cache.get(url);
+        if (this.#cache.has(url)) {
+            sheet = this.#cache.get(url);
         } else {
             const css = (await (await this.#flux_http_api.request(
                 HttpClientRequest.new(
@@ -72,7 +71,7 @@ export class FetchImportCss extends ImportCss {
                 sheet.innerText = css;
             }
 
-            this.#css_cache.set(url, sheet);
+            this.#cache.set(url, sheet);
         }
 
         return sheet;

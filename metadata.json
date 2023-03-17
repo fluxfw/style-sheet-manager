@@ -1,6 +1,21 @@
 {
-    "version": "2023-03-16-1",
-    "description": "",
-    "topics": [],
+    "version": "2023-03-17-1",
+    "description": "Import css to shadow dom with assert imports or http request fallback",
+    "topics": [
+        "adopt",
+        "assert",
+        "css",
+        "document",
+        "dom",
+        "fallback",
+        "fetch",
+        "http",
+        "import",
+        "request",
+        "root",
+        "shadow",
+        "sheet",
+        "style"
+    ],
     "homepage": ""
 }
