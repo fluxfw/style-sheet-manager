@@ -7,35 +7,27 @@ import { ImportCss } from "./ImportCss.mjs";
 
 export class FetchImportCss extends ImportCss {
     /**
-     * @type {Map<CSSStyleSheet | HTMLStyleElement>}
-     */
-    #cache;
-    /**
      * @type {FluxHttpApi}
      */
     #flux_http_api;
 
     /**
-     * @param {Map<CSSStyleSheet | HTMLStyleElement>} cache
      * @param {FluxHttpApi} flux_http_api
      * @returns {FetchImportCss}
      */
-    static new(cache, flux_http_api) {
+    static new(flux_http_api) {
         return new this(
-            cache,
             flux_http_api
         );
     }
 
     /**
-     * @param {Map<CSSStyleSheet | HTMLStyleElement>} cache
      * @param {FluxHttpApi} flux_http_api
      * @private
      */
-    constructor(cache, flux_http_api) {
+    constructor(flux_http_api) {
         super();
 
-        this.#cache = cache;
         this.#flux_http_api = flux_http_api;
     }
 
@@ -43,37 +35,30 @@ export class FetchImportCss extends ImportCss {
      * @param {string} url
      * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
      */
-    async importCss(url) {
-        let sheet;
+    async import(url) {
+        const text = (await (await this.#flux_http_api.request(
+            HttpClientRequest.new(
+                new URL(url),
+                null,
+                null,
+                {
+                    [HEADER_ACCEPT]: CONTENT_TYPE_CSS
+                },
+                true
+            )
+        )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
 
-        if (this.#cache.has(url)) {
-            sheet = this.#cache.get(url);
-        } else {
-            const css = (await (await this.#flux_http_api.request(
-                HttpClientRequest.new(
-                    new URL(url),
-                    null,
-                    null,
-                    {
-                        [HEADER_ACCEPT]: CONTENT_TYPE_CSS
-                    },
-                    true
-                )
-            )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
+        let css;
+        try {
+            css = new CSSStyleSheet();
+            await css.replace(text);
+        } catch (error) {
+            console.info("Unsupported CSSStyleSheet - Using HTMLStyleElement fallback (", error, ")");
 
-            try {
-                sheet = new CSSStyleSheet();
-                await sheet.replace(css);
-            } catch (error) {
-                console.info("Unsupported CSSStyleSheet - Using HTMLStyleElement fallback (", error, ")");
-
-                sheet = document.createElement("style");
-                sheet.innerText = css;
-            }
-
-            this.#cache.set(url, sheet);
+            css = document.createElement("style");
+            css.innerText = text;
         }
 
-        return sheet;
+        return css;
     }
 }

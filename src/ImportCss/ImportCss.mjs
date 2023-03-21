@@ -7,5 +7,5 @@ export class ImportCss {
      * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
      * @abstract
      */
-    importCss(url) { }
+    import(url) { }
 }

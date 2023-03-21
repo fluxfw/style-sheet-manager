@@ -19,7 +19,7 @@ export class AssertImportCss extends ImportCss {
      * @param {string} url
      * @returns {Promise<CSSStyleSheet>}
      */
-    async importCss(url) {
+    async import(url) {
         return (await import(url, { assert: { type: "css" } })).default;
     }
 }

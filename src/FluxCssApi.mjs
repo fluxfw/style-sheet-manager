@@ -5,93 +5,80 @@ export class FluxCssApi {
     /**
      * @type {Map<CSSStyleSheet | HTMLStyleElement>}
      */
-    #cache;
+    #css;
     /**
-     * @type {FluxHttpApi}
+     * @type {FluxHttpApi | null}
      */
-    #flux_http_api;
+    #flux_http_api = null;
     /**
      * @type {ImportCss | null}
      */
     #import_css = null;
 
     /**
-     * @param {FluxHttpApi} flux_http_api
      * @returns {FluxCssApi}
      */
-    static new(flux_http_api) {
-        return new this(
-            flux_http_api
-        );
+    static new() {
+        return new this();
     }
 
     /**
-     * @param {FluxHttpApi} flux_http_api
      * @private
      */
-    constructor(flux_http_api) {
-        this.#flux_http_api = flux_http_api;
-        this.#cache = new Map();
+    constructor() {
+        this.#css = new Map();
+    }
+
+    /**
+     * @param {ShadowRoot | Document} element
+     * @param {CSSStyleSheet | HTMLStyleElement} css
+     * @returns {void}
+     */
+    adopt(element, css) {
+        if (css instanceof HTMLStyleElement) {
+            const cloned_css = css.cloneNode(true);
+
+            if (element instanceof Document) {
+                element.head.appendChild(cloned_css);
+            } else {
+                element.prepend(cloned_css);
+            }
+        } else {
+            try {
+                element.adoptedStyleSheets.push(css);
+            } catch (error) {
+                console.error("Unsupported adoptedStyleSheets - No fallback possible in this context (", error, ")");
+            }
+        }
     }
 
     /**
      * @param {string} url
      * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
      */
-    async importCss(url) {
-        return (await this.#getImportCss()).importCss(
-            url
-        );
-    }
+    async import(url) {
+        let css;
 
-    /**
-     * @param {ShadowRoot | Document} root
-     * @param {string} url
-     * @returns {void}
-     */
-    importCssToRoot(root, url) {
-        if (this.#cache.has(url)) {
-            this.#adopt(
-                root,
-                this.#cache.get(url)
-            );
+        if (this.#css.has(url)) {
+            css = this.#css.get(url);
         } else {
-            this.importCss(
+            css = (await this.#getImportCss()).import(
                 url
-            ).then(sheet => {
-                this.#cache.set(url, sheet);
+            );
 
-                this.#adopt(
-                    root,
-                    sheet
-                );
-            }).catch(error => {
-                console.error(`Import css ${url} failed (`, error, ")");
-            });
+            this.#css.set(url, css);
         }
+
+        return css;
     }
 
     /**
-     * @param {ShadowRoot | Document} root
-     * @param {CSSStyleSheet | HTMLStyleElement} sheet
-     * @returns {void}
+     * @returns {Promise<FluxHttpApi>}
      */
-    #adopt(root, sheet) {
-        if (sheet instanceof HTMLStyleElement) {
-            const cloned_sheet = sheet.cloneNode(true);
+    async #getFluxHttpApi() {
+        this.#flux_http_api ??= (await import("../../flux-http-api/src/FluxHttpApi.mjs")).FluxHttpApi.new();
 
-            if (root instanceof Document) {
-                root.head.appendChild(cloned_sheet);
-            } else {
-                root.prepend(cloned_sheet);
-            }
-        } else {
-            try {
-                root.adoptedStyleSheets.push(sheet);
-            } catch (error) {
-                console.error("Unsupported adoptedStyleSheets - No fallback possible in this context (", error, ")");
-            }
-        }
+        return this.#flux_http_api;
     }
 
     /**
@@ -112,11 +99,12 @@ export class FluxCssApi {
             console.info("Unsupported assert import - Using fetch fallback");
 
             this.#import_css ??= (await import("./ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
-                this.#cache,
-                this.#flux_http_api
+                await this.#getFluxHttpApi()
             );
         }
 
         return this.#import_css;
     }
 }
+
+export const flux_css_api = FluxCssApi.new();
