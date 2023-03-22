@@ -32,20 +32,30 @@ export class FluxCssApi {
     /**
      * @param {ShadowRoot | Document} element
      * @param {CSSStyleSheet | HTMLStyleElement} css
+     * @param {boolean | null} prepend
      * @returns {void}
      */
-    adopt(element, css) {
+    adopt(element, css, prepend = null) {
         if (css instanceof HTMLStyleElement) {
             const cloned_css = css.cloneNode(true);
 
             if (element instanceof Document) {
-                element.head.appendChild(cloned_css);
+                let first_css;
+                if ((prepend ?? false) && (first_css = element.head.querySelector(css.tagName)) !== null) {
+                    element.head.insertBefore(cloned_css, first_css);
+                } else {
+                    element.head.appendChild(cloned_css);
+                }
             } else {
-                element.prepend(cloned_css);
+                if (prepend ?? false) {
+                    element.insertBefore(cloned_css, element.querySelector(css.tagName));
+                } else {
+                    element.prepend(cloned_css);
+                }
             }
         } else {
             try {
-                element.adoptedStyleSheets.push(css);
+                element.adoptedStyleSheets[prepend ?? false ? "unshift" : "push"](css);
             } catch (error) {
                 console.error("Unsupported adoptedStyleSheets - No fallback possible in this context (", error, ")");
             }
