@@ -39,16 +39,16 @@ export class FluxCssApi {
         if (css instanceof HTMLStyleElement) {
             const cloned_css = css.cloneNode(true);
 
+            let first_css;
             if (element instanceof Document) {
-                let first_css;
                 if ((prepend ?? false) && (first_css = element.head.querySelector(css.tagName)) !== null) {
-                    element.head.insertBefore(cloned_css, first_css);
+                    first_css.before(cloned_css);
                 } else {
                     element.head.appendChild(cloned_css);
                 }
             } else {
-                if (prepend ?? false) {
-                    element.insertBefore(cloned_css, element.querySelector(css.tagName));
+                if ((prepend ?? false) && (first_css = element.querySelector(css.tagName)) !== null) {
+                    first_css.before(cloned_css);
                 } else {
                     element.prepend(cloned_css);
                 }

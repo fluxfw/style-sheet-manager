@@ -1,6 +1,9 @@
-import { ImportCss } from "./ImportCss.mjs";
+/** @typedef {import("./ImportCss.mjs").ImportCss} ImportCss */
 
-export class AssertImportCss extends ImportCss {
+/**
+ * @implements {ImportCss}
+ */
+export class AssertImportCss {
     /**
      * @returns {AssertImportCss}
      */
@@ -12,7 +15,7 @@ export class AssertImportCss extends ImportCss {
      * @private
      */
     constructor() {
-        super();
+
     }
 
     /**

@@ -1,11 +1,14 @@
 import { CONTENT_TYPE_CSS } from "../../../flux-http-api/src/ContentType/CONTENT_TYPE.mjs";
 import { HEADER_ACCEPT } from "../../../flux-http-api/src/Header/HEADER.mjs";
 import { HttpClientRequest } from "../../../flux-http-api/src/Client/HttpClientRequest.mjs";
-import { ImportCss } from "./ImportCss.mjs";
 
 /** @typedef {import("../../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
+/** @typedef {import("./ImportCss.mjs").ImportCss} ImportCss */
 
-export class FetchImportCss extends ImportCss {
+/**
+ * @implements {ImportCss}
+ */
+export class FetchImportCss {
     /**
      * @type {FluxHttpApi}
      */
@@ -26,8 +29,6 @@ export class FetchImportCss extends ImportCss {
      * @private
      */
     constructor(flux_http_api) {
-        super();
-
         this.#flux_http_api = flux_http_api;
     }
 
