@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-05-30-1
+
+Changes:
+
+- Remove `adoptedStyleSheets` and `CSSStyleSheet` fallback
+
 ## v2023-04-11-1
 
 Changes:

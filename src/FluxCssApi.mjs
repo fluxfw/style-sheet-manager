@@ -3,7 +3,7 @@
 
 export class FluxCssApi {
     /**
-     * @type {Map<CSSStyleSheet | HTMLStyleElement>}
+     * @type {Map<string, CSSStyleSheet>}
      */
     #css;
     /**
@@ -30,41 +30,8 @@ export class FluxCssApi {
     }
 
     /**
-     * @param {ShadowRoot | Document} element
-     * @param {CSSStyleSheet | HTMLStyleElement} css
-     * @param {boolean | null} prepend
-     * @returns {void}
-     */
-    adopt(element, css, prepend = null) {
-        if (css instanceof HTMLStyleElement) {
-            const cloned_css = css.cloneNode(true);
-
-            let first_css;
-            if (element instanceof Document) {
-                if ((prepend ?? false) && (first_css = element.head.querySelector(css.tagName)) !== null) {
-                    first_css.before(cloned_css);
-                } else {
-                    element.head.appendChild(cloned_css);
-                }
-            } else {
-                if ((prepend ?? false) && (first_css = element.querySelector(css.tagName)) !== null) {
-                    first_css.before(cloned_css);
-                } else {
-                    element.prepend(cloned_css);
-                }
-            }
-        } else {
-            try {
-                element.adoptedStyleSheets[prepend ?? false ? "unshift" : "push"](css);
-            } catch (error) {
-                console.error("Unsupported adoptedStyleSheets - No fallback possible in this context (", error, ")");
-            }
-        }
-    }
-
-    /**
      * @param {string} url
-     * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
+     * @returns {Promise<CSSStyleSheet>}
      */
     async import(url) {
         let css;
@@ -106,9 +73,9 @@ export class FluxCssApi {
                 console.error(error);
             }
 
-            console.info("Unsupported assert import - Using fetch fallback");
+            console.info("Unsupported assert import - Using request fallback");
 
-            this.#import_css ??= (await import("./ImportCss/FetchImportCss.mjs")).FetchImportCss.new(
+            this.#import_css ??= (await import("./ImportCss/RequestImportCss.mjs")).RequestImportCss.new(
                 await this.#getFluxHttpApi()
             );
         }

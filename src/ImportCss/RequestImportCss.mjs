@@ -8,7 +8,7 @@ import { HttpClientRequest } from "../../../flux-http-api/src/Client/HttpClientR
 /**
  * @implements {ImportCss}
  */
-export class FetchImportCss {
+export class RequestImportCss {
     /**
      * @type {FluxHttpApi}
      */
@@ -16,7 +16,7 @@ export class FetchImportCss {
 
     /**
      * @param {FluxHttpApi} flux_http_api
-     * @returns {FetchImportCss}
+     * @returns {RequestImportCss}
      */
     static new(flux_http_api) {
         return new this(
@@ -34,10 +34,12 @@ export class FetchImportCss {
 
     /**
      * @param {string} url
-     * @returns {Promise<CSSStyleSheet | HTMLStyleElement>}
+     * @returns {Promise<CSSStyleSheet>}
      */
     async import(url) {
-        const text = (await (await this.#flux_http_api.request(
+        const css = new CSSStyleSheet();
+
+        await css.replace((await (await this.#flux_http_api.request(
             HttpClientRequest.new(
                 new URL(url),
                 null,
@@ -47,18 +49,7 @@ export class FetchImportCss {
                 },
                 true
             )
-        )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`);
-
-        let css;
-        try {
-            css = new CSSStyleSheet();
-            await css.replace(text);
-        } catch (error) {
-            console.info("Unsupported CSSStyleSheet - Using HTMLStyleElement fallback (", error, ")");
-
-            css = document.createElement("style");
-            css.innerText = text;
-        }
+        )).body.css()).replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`));
 
         return css;
     }
