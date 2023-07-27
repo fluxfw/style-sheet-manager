@@ -7,16 +7,19 @@ import { HttpClientRequest } from "../../../flux-http-api/src/Client/HttpClientR
 
 /**
  * @implements {ImportCss}
+ * @deprecated
  */
 export class RequestImportCss {
     /**
      * @type {FluxHttpApi}
+     * @deprecated
      */
     #flux_http_api;
 
     /**
      * @param {FluxHttpApi} flux_http_api
      * @returns {RequestImportCss}
+     * @deprecated
      */
     static new(flux_http_api) {
         return new this(
@@ -27,6 +30,7 @@ export class RequestImportCss {
     /**
      * @param {FluxHttpApi} flux_http_api
      * @private
+     * @deprecated
      */
     constructor(flux_http_api) {
         this.#flux_http_api = flux_http_api;
@@ -35,6 +39,7 @@ export class RequestImportCss {
     /**
      * @param {string} url
      * @returns {Promise<CSSStyleSheet>}
+     * @deprecated
      */
     async import(url) {
         const css = new CSSStyleSheet();

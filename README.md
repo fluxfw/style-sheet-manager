@@ -1,3 +1,3 @@
-# flux-css-api
+# flux-style-sheet-manager
 
-Import css to shadow dom with assert imports or http request fallback
+Style sheet manager

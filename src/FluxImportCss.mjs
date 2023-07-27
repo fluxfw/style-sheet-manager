@@ -1,29 +1,37 @@
 /** @typedef {import("../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
 /** @typedef {import("./ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
-export class FluxCssApi {
+/**
+ * @deprecated
+ */
+export class FluxImportCss {
     /**
      * @type {Map<string, CSSStyleSheet>}
+     * @deprecated
      */
     #css;
     /**
      * @type {FluxHttpApi | null}
+     * @deprecated
      */
     #flux_http_api = null;
     /**
      * @type {ImportCss | null}
+     * @deprecated
      */
     #import_css = null;
 
     /**
-     * @returns {FluxCssApi}
+     * @returns {Promise<FluxImportCss>}
+     * @deprecated
      */
-    static new() {
+    static async new() {
         return new this();
     }
 
     /**
      * @private
+     * @deprecated
      */
     constructor() {
         this.#css = new Map();
@@ -32,6 +40,7 @@ export class FluxCssApi {
     /**
      * @param {string} url
      * @returns {Promise<CSSStyleSheet>}
+     * @deprecated
      */
     async import(url) {
         let css;
@@ -51,6 +60,7 @@ export class FluxCssApi {
 
     /**
      * @returns {Promise<FluxHttpApi>}
+     * @deprecated
      */
     async #getFluxHttpApi() {
         this.#flux_http_api ??= (await import("../../flux-http-api/src/FluxHttpApi.mjs")).FluxHttpApi.new();
@@ -60,6 +70,7 @@ export class FluxCssApi {
 
     /**
      * @returns {Promise<ImportCss>}
+     * @deprecated
      */
     async #getImportCss() {
         if (this.#import_css === null) {
@@ -84,4 +95,7 @@ export class FluxCssApi {
     }
 }
 
-export const flux_css_api = FluxCssApi.new();
+/**
+ * @deprecated
+ */
+export const flux_import_css = await FluxImportCss.new();

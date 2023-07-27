@@ -2,10 +2,12 @@
 
 /**
  * @implements {ImportCss}
+ * @deprecated
  */
 export class AssertImportCss {
     /**
      * @returns {AssertImportCss}
+     * @deprecated
      */
     static new() {
         return new this();
@@ -13,6 +15,7 @@ export class AssertImportCss {
 
     /**
      * @private
+     * @deprecated
      */
     constructor() {
 
@@ -21,6 +24,7 @@ export class AssertImportCss {
     /**
      * @param {string} url
      * @returns {Promise<CSSStyleSheet>}
+     * @deprecated
      */
     async import(url) {
         return (await import(url, { assert: { type: "css" } })).default;

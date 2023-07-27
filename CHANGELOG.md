@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-07-27-1
+
+Changes:
+
+- Style sheet manager
+
 ## v2023-05-30-1
 
 Changes:
