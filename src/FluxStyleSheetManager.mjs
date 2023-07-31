@@ -8,21 +8,21 @@ export class FluxStyleSheetManager {
      */
     #style_sheets;
     /**
-     * @type {string}
+     * @type {{[key: string]: string}}
      */
-    #variable_prefix;
+    #type_variables;
     /**
      * @type {Map<string, CSSStyleSheet>}
      */
     #variable_style_sheets;
 
     /**
-     * @param {string} variable_prefix
+     * @param {{[key: string]: string}} type_variables
      * @returns {Promise<FluxStyleSheetManager>}
      */
-    static async new(variable_prefix) {
+    static async new(type_variables) {
         const flux_style_sheet_manager = new this(
-            variable_prefix
+            type_variables
         );
 
         await flux_style_sheet_manager.addRoot(
@@ -33,11 +33,11 @@ export class FluxStyleSheetManager {
     }
 
     /**
-     * @param {string} variable_prefix
+     * @param {{[key: string]: string}} type_variables
      * @private
      */
-    constructor(variable_prefix) {
-        this.#variable_prefix = variable_prefix;
+    constructor(type_variables) {
+        this.#type_variables = type_variables;
         this.#roots = [];
         this.#style_sheets = [];
         this.#variable_style_sheets = new Map();
@@ -105,7 +105,11 @@ export class FluxStyleSheetManager {
             variable,
             type
         ] of Object.entries(variables)) {
-            style_sheet.cssRules[0].style.setProperty(variable, `var(${this.#variable_prefix}${type})`);
+            if ((this.#type_variables[type] ?? "") === "") {
+                continue;
+            }
+
+            style_sheet.cssRules[0].style.setProperty(variable, `var(${this.#type_variables[type]})`);
         }
 
         this.#variable_style_sheets.set(id, style_sheet);
