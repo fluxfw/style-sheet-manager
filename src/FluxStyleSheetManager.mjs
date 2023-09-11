@@ -99,7 +99,7 @@ export class FluxStyleSheetManager {
 
         const style_sheet = new CSSStyleSheet();
 
-        await style_sheet.replace(":root, :host { }");
+        style_sheet.insertRule(":root, :host { }");
 
         for (const [
             variable,
