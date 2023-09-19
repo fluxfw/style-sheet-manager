@@ -73,7 +73,7 @@ export class FluxStyleSheetManager {
             return;
         }
 
-        const method = beginning ?? null ? "unshift" : "push";
+        const method = beginning ?? false ? "unshift" : "push";
 
         this.#style_sheets[method](style_sheet);
 
