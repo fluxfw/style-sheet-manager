@@ -1,12 +1,16 @@
 export class FluxStyleSheetManager {
     /**
+     * @type {CSSStyleSheet[]}
+     */
+    #root_style_sheets;
+    /**
      * @type {(Document | ShadowRoot)[]}
      */
     #roots;
     /**
      * @type {CSSStyleSheet[]}
      */
-    #style_sheets;
+    #shadow_style_sheets;
     /**
      * @type {{[key: string]: string}}
      */
@@ -14,7 +18,7 @@ export class FluxStyleSheetManager {
     /**
      * @type {Map<string, CSSStyleSheet>}
      */
-    #variable_style_sheets;
+    #variables_root_style_sheets;
 
     /**
      * @param {{[key: string]: string}} type_variables
@@ -38,9 +42,10 @@ export class FluxStyleSheetManager {
      */
     constructor(type_variables) {
         this.#type_variables = type_variables;
+        this.#root_style_sheets = [];
         this.#roots = [];
-        this.#style_sheets = [];
-        this.#variable_style_sheets = new Map();
+        this.#shadow_style_sheets = [];
+        this.#variables_root_style_sheets = new Map();
     }
 
     /**
@@ -54,7 +59,7 @@ export class FluxStyleSheetManager {
 
         this.#roots.push(root);
 
-        for (const style_sheet of this.#style_sheets) {
+        for (const style_sheet of this.#root_style_sheets) {
             if (root.adoptedStyleSheets.includes(style_sheet)) {
                 continue;
             }
@@ -68,14 +73,14 @@ export class FluxStyleSheetManager {
      * @param {boolean | null} beginning
      * @returns {Promise<void>}
      */
-    async addStyleSheet(style_sheet, beginning = null) {
-        if (this.#style_sheets.includes(style_sheet)) {
+    async addRootStyleSheet(style_sheet, beginning = null) {
+        if (this.#root_style_sheets.includes(style_sheet)) {
             return;
         }
 
         const method = beginning ?? false ? "unshift" : "push";
 
-        this.#style_sheets[method](style_sheet);
+        this.#root_style_sheets[method](style_sheet);
 
         for (const root of this.#roots) {
             if (root.adoptedStyleSheets.includes(style_sheet)) {
@@ -87,19 +92,51 @@ export class FluxStyleSheetManager {
     }
 
     /**
+     * @param {CSSStyleSheet} style_sheet
+     * @param {boolean | null} beginning
+     * @returns {Promise<void>}
+     */
+    async addShadowStyleSheet(style_sheet, beginning = null) {
+        if (this.#shadow_style_sheets.includes(style_sheet)) {
+            return;
+        }
+
+        this.#shadow_style_sheets[beginning ?? false ? "unshift" : "push"](style_sheet);
+
+        await this.addRootStyleSheet(
+            style_sheet,
+            beginning
+        );
+    }
+
+    /**
+     * @param {ShadowRoot} shadow
+     * @returns {Promise<void>}
+     */
+    async addStyleSheetsToShadow(shadow) {
+        for (const style_sheet of this.#shadow_style_sheets) {
+            if (shadow.adoptedStyleSheets.includes(style_sheet)) {
+                continue;
+            }
+
+            shadow.adoptedStyleSheets.push(style_sheet);
+        }
+    }
+
+    /**
      * @param {string} id
      * @param {{[key: string]: string}} variables
      * @param {boolean | null} beginning
      * @returns {Promise<void>}
      */
-    async generateVariableStyleSheet(id, variables, beginning = null) {
-        if (this.#variable_style_sheets.has(id)) {
+    async generateVariablesRootStyleSheet(id, variables, beginning = null) {
+        if (this.#variables_root_style_sheets.has(id)) {
             return;
         }
 
         const style_sheet = new CSSStyleSheet();
 
-        style_sheet.insertRule(":root, :host { }");
+        const style_sheet_rule = style_sheet.cssRules[style_sheet.insertRule(":root, :host { }")];
 
         for (const [
             variable,
@@ -109,12 +146,12 @@ export class FluxStyleSheetManager {
                 continue;
             }
 
-            style_sheet.cssRules[0].style.setProperty(variable, `var(${this.#type_variables[type]})`);
+            style_sheet_rule.style.setProperty(variable, `var(${this.#type_variables[type]})`);
         }
 
-        this.#variable_style_sheets.set(id, style_sheet);
+        this.#variables_root_style_sheets.set(id, style_sheet);
 
-        await this.addStyleSheet(
+        await this.addRootStyleSheet(
             style_sheet,
             beginning
         );
