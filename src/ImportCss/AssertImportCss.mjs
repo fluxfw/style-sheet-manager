@@ -1,7 +1,4 @@
-/** @typedef {import("./ImportCss.mjs").ImportCss} ImportCss */
-
 /**
- * @implements {ImportCss}
  * @deprecated
  */
 export class AssertImportCss {

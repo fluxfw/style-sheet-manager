@@ -1,4 +1,3 @@
-/** @typedef {import("../../flux-http-api/src/FluxHttpApi.mjs").FluxHttpApi} FluxHttpApi */
 /** @typedef {import("./ImportCss/ImportCss.mjs").ImportCss} ImportCss */
 
 /**
@@ -10,11 +9,6 @@ export class FluxImportCss {
      * @deprecated
      */
     #css;
-    /**
-     * @type {FluxHttpApi | null}
-     * @deprecated
-     */
-    #flux_http_api = null;
     /**
      * @type {ImportCss | null}
      * @deprecated
@@ -59,16 +53,6 @@ export class FluxImportCss {
     }
 
     /**
-     * @returns {Promise<FluxHttpApi>}
-     * @deprecated
-     */
-    async #getFluxHttpApi() {
-        this.#flux_http_api ??= (await import("../../flux-http-api/src/FluxHttpApi.mjs")).FluxHttpApi.new();
-
-        return this.#flux_http_api;
-    }
-
-    /**
      * @returns {Promise<ImportCss>}
      * @deprecated
      */
@@ -84,11 +68,9 @@ export class FluxImportCss {
                 console.error(error);
             }
 
-            console.info("Unsupported assert import - Using request fallback");
+            console.info("Unsupported assert import - Using fallback");
 
-            this.#import_css ??= (await import("./ImportCss/RequestImportCss.mjs")).RequestImportCss.new(
-                await this.#getFluxHttpApi()
-            );
+            this.#import_css ??= (await import("./ImportCss/FallbackImportCss.mjs")).FallbackImportCss.new();
         }
 
         return this.#import_css;

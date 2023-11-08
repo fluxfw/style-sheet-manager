@@ -1,13 +1,4 @@
 /**
- * @interface
+ * @typedef {{import: (url: string) => Promise<CSSStyleSheet>}} ImportCss
  * @deprecated
  */
-export class ImportCss {
-    /**
-     * @param {string} url
-     * @returns {Promise<CSSStyleSheet>}
-     * @abstract
-     * @deprecated
-     */
-    import(url) { }
-}

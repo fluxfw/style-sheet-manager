@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-11-08-1
+
+Changes:
+
+- New import css fallback
+
 ## v2023-09-25-1
 
 Changes:
