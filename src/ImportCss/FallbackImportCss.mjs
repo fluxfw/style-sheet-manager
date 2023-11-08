@@ -25,7 +25,7 @@ export class FallbackImportCss {
      */
     async import(url) {
         const div_element = document.createElement("div");
-        div_element.hidden = true;
+        div_element.style.display = "none";
 
         const shadow = div_element.attachShadow({
             mode: "closed"
