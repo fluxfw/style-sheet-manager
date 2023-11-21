@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-11-21-1
+
+Changes:
+
+- Fix Firefox based browsers import css fallback inline urls (Cors even is same server)
+
 ## v2023-11-08-2
 
 Changes:

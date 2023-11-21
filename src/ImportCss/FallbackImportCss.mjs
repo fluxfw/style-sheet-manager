@@ -56,7 +56,20 @@ export class FallbackImportCss {
         const css = new CSSStyleSheet();
 
         for (const rule of style_sheet.cssRules) {
-            css.insertRule(rule.cssText.replaceAll("url(\"", `url("${url.substring(0, url.lastIndexOf("/"))}/`), css.cssRules.length);
+            let rule_css = rule.cssText;
+
+            let match;
+            while ((match = rule_css.match(/url\(["']?([^"']+)["']?\)/)) !== null) {
+                const response = await fetch(`${url.substring(0, url.lastIndexOf("/"))}/${match[1]}`);
+
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+
+                rule_css = rule_css.replaceAll(match[0], `url("data:${response.headers.get("Content-Type") ?? ""};base64,${await response.text()}")`);
+            }
+
+            css.insertRule(rule_css, css.cssRules.length);
         }
 
         return css;
