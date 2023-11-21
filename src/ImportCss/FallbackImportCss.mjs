@@ -59,14 +59,14 @@ export class FallbackImportCss {
             let rule_css = rule.cssText;
 
             let match;
-            while ((match = rule_css.match(/url\(["']?([^"']+)["']?\)/)) !== null) {
+            while ((match = rule_css.match(/url\(["']?([^"':]+)["']?\)/)) !== null) {
                 const response = await fetch(`${url.substring(0, url.lastIndexOf("/"))}/${match[1]}`);
 
                 if (!response.ok) {
                     return Promise.reject(response);
                 }
 
-                rule_css = rule_css.replaceAll(match[0], `url("data:${response.headers.get("Content-Type") ?? ""};base64,${await response.text()}")`);
+                rule_css = rule_css.replaceAll(match[0], `url("data:${response.headers.get("Content-Type") ?? ""};base64,${btoa(await response.text())}")`);
             }
 
             css.insertRule(rule_css, css.cssRules.length);
