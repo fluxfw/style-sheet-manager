@@ -56,20 +56,39 @@ export class FallbackImportCss {
         const css = new CSSStyleSheet();
 
         for (const rule of style_sheet.cssRules) {
-            let rule_css = rule.cssText;
+            let _css = rule.cssText;
 
-            let match;
-            while ((match = rule_css.match(/url\(["']?([^"':]+)["']?\)/)) !== null) {
-                const response = await fetch(`${url.substring(0, url.lastIndexOf("/"))}/${match[1]}`);
+            for (const [
+                _url,
+                file
+            ] of _css.matchAll(/url\(["']?([^"']+)["']?\)/g)) {
+                if (!_css.includes(_url) || file.startsWith("data:")) {
+                    continue;
+                }
+
+                const response = await fetch(!file.includes(":") && !file.startsWith("/") ? `${url.substring(0, url.lastIndexOf("/"))}/${file}` : file);
 
                 if (!response.ok) {
                     return Promise.reject(response);
                 }
 
-                rule_css = rule_css.replaceAll(match[0], `url("data:${response.headers.get("Content-Type") ?? ""};base64,${btoa(await response.text())}")`);
+                const blob = await response.blob();
+
+                _css = _css.replaceAll(_url, `url("${await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+
+                    reader.addEventListener("error", () => {
+                        reject(reader.error);
+                    });
+                    reader.addEventListener("load", () => {
+                        resolve(reader.result);
+                    });
+
+                    reader.readAsDataURL(blob);
+                })}")`);
             }
 
-            css.insertRule(rule_css, css.cssRules.length);
+            css.insertRule(_css, css.cssRules.length);
         }
 
         return css;

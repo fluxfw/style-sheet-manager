@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-11-22-1
+
+Changes:
+
+- Import css fallback supports absolute inline urls and use `FileReader` to get `data` url
+
 ## v2023-11-21-2
 
 Changes:
