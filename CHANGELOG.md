@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-11-24-1
+
+Changes:
+
+- Fix `readAsDataURL` not work on WebKit based browsers (Secure context error even on secure context) using previous variant as fallback (But will not work with binary)
+
 ## v2023-11-22-1
 
 Changes:

@@ -3,6 +3,11 @@
  */
 export class FallbackImportCss {
     /**
+     * @type {boolean | null}
+     */
+    #supports_blob_to_data_url = null;
+
+    /**
      * @returns {FallbackImportCss}
      * @deprecated
      */
@@ -72,25 +77,57 @@ export class FallbackImportCss {
                     return Promise.reject(response);
                 }
 
-                const blob = await response.blob();
-
-                _css = _css.replaceAll(_url, `url("${await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-
-                    reader.addEventListener("error", () => {
-                        reject(reader.error);
-                    });
-                    reader.addEventListener("load", () => {
-                        resolve(reader.result);
-                    });
-
-                    reader.readAsDataURL(blob);
-                })}")`);
+                _css = _css.replaceAll(_url, `url("${await this.#supportsBlobToDataUrl() ? await this.#blobToDataUrl(
+                    await response.blob()
+                ) : `data:${response.headers.get("Content-Type") ?? ""};base64,${btoa(await response.text())}`}")`);
             }
 
             css.insertRule(_css, css.cssRules.length);
         }
 
         return css;
+    }
+
+    /**
+     * @param {Blob} blob
+     * @returns {Promise<string>}
+     */
+    async #blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+            const file_reader = new FileReader();
+
+            file_reader.addEventListener("error", () => {
+                reject(file_reader.error);
+            });
+
+            file_reader.addEventListener("load", () => {
+                resolve(file_reader.result);
+            });
+
+            file_reader.readAsDataURL(blob);
+        });
+    }
+
+    /**
+     * @returns {Promise<boolean>}
+     */
+    async #supportsBlobToDataUrl() {
+        this.#supports_blob_to_data_url ??= await (async () => {
+            try {
+                await this.#blobToDataUrl(
+                    new Blob()
+                );
+
+                return true;
+            } catch (error) {
+                console.error(error);
+            }
+
+            console.info("Unsupported blob to data url - Using fallback");
+
+            return false;
+        })();
+
+        return this.#supports_blob_to_data_url;
     }
 }
