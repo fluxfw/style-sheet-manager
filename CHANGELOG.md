@@ -6,6 +6,12 @@ Changes:
 
 \-
 
+## v2023-11-29-1
+
+Changes:
+
+- `readAsDataURL` fallback on WebKit based browsers should works with binary now too
+
 ## v2023-11-24-1
 
 Changes:

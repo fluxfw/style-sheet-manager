@@ -79,7 +79,7 @@ export class FallbackImportCss {
 
                 _css = _css.replaceAll(_url, `url("${await this.#supportsBlobToDataUrl() ? await this.#blobToDataUrl(
                     await response.blob()
-                ) : `data:${response.headers.get("Content-Type") ?? ""};base64,${btoa(await response.text())}`}")`);
+                ) : `data:${response.headers.get("Content-Type") ?? ""};base64,${btoa(Array.from(new Uint8Array(await response.arrayBuffer())).map(char => String.fromCharCode(char)).join(""))}`}")`);
             }
 
             css.insertRule(_css, css.cssRules.length);
