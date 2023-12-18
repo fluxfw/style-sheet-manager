@@ -74,7 +74,7 @@ export class FallbackImportCss {
                 const response = await fetch(!file.includes(":") && !file.startsWith("/") ? `${url.substring(0, url.lastIndexOf("/"))}/${file}` : file);
 
                 if (!response.ok) {
-                    return Promise.reject(response);
+                    throw response;
                 }
 
                 _css = _css.replaceAll(_url, `url("${await this.#supportsBlobToDataUrl() ? await this.#blobToDataUrl(
