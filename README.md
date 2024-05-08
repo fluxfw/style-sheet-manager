@@ -1,3 +1,1 @@
-# flux-style-sheet-manager
-
-Style sheet manager
+# style-sheet-manager

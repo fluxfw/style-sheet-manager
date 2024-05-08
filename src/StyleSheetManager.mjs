@@ -1,4 +1,4 @@
-export class FluxStyleSheetManager {
+export class StyleSheetManager {
     /**
      * @type {CSSStyleSheet[]}
      */
@@ -22,18 +22,18 @@ export class FluxStyleSheetManager {
 
     /**
      * @param {{[key: string]: string}} type_variables
-     * @returns {Promise<FluxStyleSheetManager>}
+     * @returns {Promise<StyleSheetManager>}
      */
     static async new(type_variables) {
-        const flux_style_sheet_manager = new this(
+        const style_sheet_manager = new this(
             type_variables
         );
 
-        await flux_style_sheet_manager.addRoot(
+        await style_sheet_manager.addRoot(
             document
         );
 
-        return flux_style_sheet_manager;
+        return style_sheet_manager;
     }
 
     /**
