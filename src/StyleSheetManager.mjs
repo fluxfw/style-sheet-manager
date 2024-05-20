@@ -136,7 +136,7 @@ export class StyleSheetManager {
 
         const style_sheet = new CSSStyleSheet();
 
-        const style_sheet_rule = style_sheet.cssRules[style_sheet.insertRule(":root, :host { }")];
+        const style_sheet_rule = style_sheet.cssRules[style_sheet.insertRule(":root, :host {}")];
 
         for (const [
             variable,
