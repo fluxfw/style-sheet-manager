@@ -2,15 +2,15 @@ export class StyleSheetManager {
     /**
      * @type {CSSStyleSheet[]}
      */
-    #root_style_sheets;
+    #root_style_sheets = [];
     /**
      * @type {(Document | ShadowRoot)[]}
      */
-    #roots;
+    #roots = [];
     /**
      * @type {CSSStyleSheet[]}
      */
-    #shadow_style_sheets;
+    #shadow_style_sheets = [];
     /**
      * @type {{[key: string]: string}}
      */
@@ -18,7 +18,7 @@ export class StyleSheetManager {
     /**
      * @type {Map<string, CSSStyleSheet>}
      */
-    #variables_root_style_sheets;
+    #variables_root_style_sheets = new Map();
 
     /**
      * @param {{[key: string]: string}} type_variables
@@ -42,10 +42,6 @@ export class StyleSheetManager {
      */
     constructor(type_variables) {
         this.#type_variables = type_variables;
-        this.#root_style_sheets = [];
-        this.#roots = [];
-        this.#shadow_style_sheets = [];
-        this.#variables_root_style_sheets = new Map();
     }
 
     /**
